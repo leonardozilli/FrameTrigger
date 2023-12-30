@@ -1,0 +1,4 @@
+__pycache__/
+*.txt
+*log
+data/framenet_v17/
