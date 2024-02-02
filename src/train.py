@@ -52,7 +52,6 @@ def train(pretrained_model, dataset, epochs, batch_size, lr, model_output_path):
 
 
 #%%
-
 if __name__ == '__main__':
     dataset = load_dataset_hf(flatten=True)
 
