@@ -2,8 +2,8 @@
 
 import torch
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
-from evaluate import compute_metrics
-from fn17 import load_dataset_hf
+from .evaluate import compute_metrics
+from .fn17 import load_dataset_hf
 
 
 #%%
@@ -63,4 +63,4 @@ if __name__ == '__main__':
     LEARNING_RATE = 1e-5
 
     train(pretrained_model=CHECKPOINT, dataset=dataset,
-        epochs=N_EPOCHS, batch_size=BATCH_SIZE, lr=LEARNING_RATE, model_output_path='models/')
+        epochs=N_EPOCHS, batch_size=BATCH_SIZE, lr=LEARNING_RATE, model_output_path=OUT_DIR)
