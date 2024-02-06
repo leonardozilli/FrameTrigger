@@ -4,6 +4,7 @@ import torch
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
 from .evaluate import compute_metrics
 from .fn17 import load_dataset_hf
+from .process_data import prepare_data
 
 
 #%%
@@ -52,6 +53,24 @@ def train(pretrained_model, dataset, epochs, batch_size, lr, model_output_path):
     trainer.save_model(model_output_path)
 
 
+def test(pretrained_model, test_dataset):
+    tokenizer = AutoTokenizer.from_pretrained(pretrained_model)
+    data_collator = DataCollatorForTokenClassification(tokenizer=tokenizer)
+    model = AutoModelForTokenClassification.from_pretrained(pretrained_model)
+    model.eval()
+
+    trainer = Trainer(
+        model=model,
+        tokenizer=tokenizer,
+        data_collator=data_collator,
+        compute_metrics=compute_metrics
+    )
+
+    results = trainer.predict(test_dataset)
+
+    return results[2]
+
+
 #%%
 if __name__ == '__main__':
     dataset = load_dataset_hf(flatten=True)
@@ -62,5 +81,12 @@ if __name__ == '__main__':
     BATCH_SIZE = 64
     LEARNING_RATE = 1e-5
 
-    train(pretrained_model=CHECKPOINT, dataset=dataset,
+    tokenized_dataset = prepare_data(dataset, CHECKPOINT)
+
+    train(pretrained_model=CHECKPOINT, dataset=tokenized_dataset,
         epochs=N_EPOCHS, batch_size=BATCH_SIZE, lr=LEARNING_RATE, model_output_path=OUT_DIR)
+    
+    test_results = test(OUT_DIR, tokenized_dataset['test'])
+
+    print('\n==== Test Results ====')
+    print(test_results)
