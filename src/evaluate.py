@@ -14,6 +14,4 @@ def compute_metrics(eval_prediction):
         "precision": precision_score(true_labels, true_predictions, average='binary'),
         "recall": recall_score(true_labels, true_predictions, average='binary'),
         "f1_score": f1_score(true_labels, true_predictions, pos_label=1),
-        "micro_f1": f1_score(true_labels, true_predictions, average='micro'),
-        "macro_f1": f1_score(true_labels, true_predictions, average='macro'),
     }

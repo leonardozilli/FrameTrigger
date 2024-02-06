@@ -32,7 +32,7 @@ def train(pretrained_model, dataset, epochs, batch_size, lr, model_output_path):
     )
 
     model = AutoModelForTokenClassification.from_pretrained(
-        CHECKPOINT,
+        pretrained_model,
         id2label=id2label,
         label2id=label2id
     )
@@ -49,6 +49,7 @@ def train(pretrained_model, dataset, epochs, batch_size, lr, model_output_path):
 
     trainer.train()
     trainer.evaluate()
+    trainer.save_model(model_output_path)
 
 
 #%%
