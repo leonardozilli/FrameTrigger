@@ -18,10 +18,11 @@ def predict_triggers(pretrained_model, sentence):
             word += '*'
         tagged_sentence +=  ' ' + word
     
-    tagged_sentence = tagged_sentence.split()
+    #tagged_sentence = tagged_sentence.split()
     
-    for i, word in enumerate(tagged_sentence):
-        if '*' in word and not word.endswith('*'):
-            tagged_sentence[i] = word.replace("*", "") + "*"
+    #for i, word in enumerate(tagged_sentence):
+        #if '*' in word and not word.endswith('*'):
+            #tagged_sentence[i] = word.replace("*", "") + "*"
 
-    return ' '.join(tagged_sentence)
+    #return ' '.join(tagged_sentence)
+    return tagged_sentence.strip()
