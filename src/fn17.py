@@ -180,7 +180,7 @@ def load_dataset_nltk():
     train_data = load_training_data()
 
     ds['train'] = Dataset.from_list(train_data)
-    ds['dev'] = Dataset.from_list(val_data)
+    ds['validation'] = Dataset.from_list(val_data)
     ds['test'] = Dataset.from_list(test_data)
 
     return ds
