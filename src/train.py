@@ -1,6 +1,7 @@
 #%%
 
 import torch
+from nltk.corpus import framenet as fn
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
 from .evaluate import compute_metrics
 from .fn17 import load_dataset_hf
@@ -8,11 +9,11 @@ from .process_data import prepare_data
 
 
 #%%
-def train(pretrained_model, dataset, epochs, batch_size, lr, model_output_path):
+def train(pretrained_model, task, dataset, epochs, batch_size, lr, model_output_path):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     torch.cuda.empty_cache()
 
-    id2label = {0: "Not a target", 1: "Target"}
+    id2label = {0: "Not a target", 1: "Target"} if task == 'targets' else {i: frame['name'] for i, frame in enumerate(fn.frames())}
     label2id = {v: k for k, v in id2label.items()}
 
     tokenizer = AutoTokenizer.from_pretrained(pretrained_model)

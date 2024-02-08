@@ -44,6 +44,7 @@ SESAME_DEV_FILES = [
     "PropBank__TicketSplitting.xml",
 ]
 
+FRAME2ID = {i: frame['name'] for i, frame in enumerate(fn.frames())}
 
 def flatten(df):
     """combine a dataframe group to a one-line instance.
@@ -133,9 +134,7 @@ def parse_annotated_sentence_from_framenet_sentence(
             "text": sentence_text,
             "tokens": tokens,
             "frames": frames,
-            #really bad
-            "frame_tags": [{fe['name']: fe["ID"] for fe in fn.frames()}[f[2:]] if f[:2] in ['B-', 'I-'] else 0 for f in frames],
-            "tagged_sentence": tagged_sentence,
+            "frame_tags": [FRAME2ID[f[2:]] if f[:2] in ['B-', 'I-'] else 0 for f in frames],
         }
     return None
 
