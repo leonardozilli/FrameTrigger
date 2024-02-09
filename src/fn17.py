@@ -44,7 +44,6 @@ SESAME_DEV_FILES = [
     "PropBank__TicketSplitting.xml",
 ]
 
-FRAME2ID = {i: frame['name'] for i, frame in enumerate(fn.frames())}
 
 def flatten(df):
     """combine a dataframe group to a one-line instance.
@@ -105,6 +104,7 @@ def get_token_indices(sentence):
 def parse_annotated_sentence_from_framenet_sentence(
     fn_sentence
 ):
+    FRAME2ID = {frame['name']: i for i, frame in enumerate(fn.frames())}
     sentence_text = fn_sentence["text"]
     tokens = sentence_text.split()
     token_indices = get_token_indices(sentence_text)
