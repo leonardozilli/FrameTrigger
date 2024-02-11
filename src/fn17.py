@@ -134,7 +134,7 @@ def parse_annotated_sentence_from_framenet_sentence(
             "text": sentence_text,
             "tokens": tokens,
             "frames": frames,
-            "frame_tags": [FRAME2ID[f[2:]] if f[:2] in ['B-', 'I-'] else 0 for f in frames],
+            "frame_tags": [FRAME2ID[f[2:]] if f[:2] in ['B-', 'I-'] else -1 for f in frames],
         }
     return None
 

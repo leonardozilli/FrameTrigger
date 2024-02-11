@@ -13,8 +13,8 @@ def train(pretrained_model, task, dataset, epochs, batch_size, lr, model_output_
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     torch.cuda.empty_cache()
 
-    id2label = {i: frame['name'] for i, frame in enumerate(fn.frames(), start=1)}
-    id2label[0] = "None"
+    id2label = {i: frame['name'] for i, frame in enumerate(fn.frames())}
+    id2label[-1] = "None"
     label2id = {v: k for k, v in id2label.items()}
 
     tokenizer = AutoTokenizer.from_pretrained(pretrained_model)
