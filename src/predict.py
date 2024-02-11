@@ -1,4 +1,5 @@
 from transformers import pipeline, AutoTokenizer, AutoModelForTokenClassification
+from spacy import displacy
 
 
 def predict_triggers(pretrained_model, sentence):
@@ -26,3 +27,23 @@ def predict_triggers(pretrained_model, sentence):
 
     #return ' '.join(tagged_sentence)
     return tagged_sentence.strip()
+
+def predict_frames(pretrained_model, sentence, visualize):
+    model = AutoModelForTokenClassification.from_pretrained(pretrained_model)
+    tokenizer = AutoTokenizer.from_pretrained(pretrained_model)
+    
+    token_classifier = pipeline(
+        "token-classification", model=model, aggregation_strategy="simple", tokenizer=tokenizer)
+
+    ents = [{'start': d['start'], 'end': d['end'], 'label': d['entity_group']} for d in token_classifier(sentence) if d['entity_group'] != 'None']
+
+    if visualize:
+        dic_ents = {
+            "text": sentence,
+            "ents": ents,
+            "title": None
+        }
+
+        displacy.render(dic_ents, manual=True, style="ent")
+    else:
+        return token_classifier(sentence)
