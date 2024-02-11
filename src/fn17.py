@@ -104,7 +104,6 @@ def get_token_indices(sentence):
 def parse_annotated_sentence_from_framenet_sentence(
     fn_sentence
 ):
-    FRAME2ID = {frame['name']: i for i, frame in enumerate(fn.frames())}
     sentence_text = fn_sentence["text"]
     tokens = sentence_text.split()
     token_indices = get_token_indices(sentence_text)
@@ -173,6 +172,9 @@ def load_dataset_nltk():
     nltk.download("framenet_v17")
 
     ds = DatasetDict()
+
+    global FRAME2ID
+    FRAME2ID = {frame['name']: i for i, frame in enumerate(fn.frames(), start=1)}
 
     val_data = load_validation_data()
     test_data = load_test_data()
