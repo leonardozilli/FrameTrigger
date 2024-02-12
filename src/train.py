@@ -14,10 +14,13 @@ def train(pretrained_model, task, dataset, epochs, batch_size, lr, model_output_
     torch.cuda.empty_cache()
 
     id2label = {}
-    for i, frame in enumerate(fn.frames(), start=1):
-        id2label[i*2-1] = f'B-{frame["name"]}'
-        id2label[i*2] = f'I-{frame["name"]}'
-    id2label[0] = "None"
+    if task == 'targets':
+        id2label = {0: "Not a target", 1: "B-Target", 2: "I-Target"}
+    else:
+        for i, frame in enumerate(fn.frames(), start=1):
+            id2label[i*2-1] = f'B-{frame["name"]}'
+            id2label[i*2] = f'I-{frame["name"]}'
+        id2label[0] = "None"
     label2id = {v: k for k, v in id2label.items()}
 
     tokenizer = AutoTokenizer.from_pretrained(pretrained_model)

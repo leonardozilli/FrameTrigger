@@ -33,7 +33,7 @@ def predict_frames(pretrained_model, sentence, visualize):
     tokenizer = AutoTokenizer.from_pretrained(pretrained_model)
     
     token_classifier = pipeline(
-        "token-classification", model=model, aggregation_strategy="simple", tokenizer=tokenizer)
+        "token-classification", model=model, aggregation_strategy="average", tokenizer=tokenizer)
 
 
     if visualize:
@@ -47,3 +47,10 @@ def predict_frames(pretrained_model, sentence, visualize):
         displacy.render(dic_ents, manual=True, style="ent")
     else:
         return token_classifier(sentence)
+
+
+def predict(pretrained_model, sentence, task, visualize):
+    if task == 'triggers':
+        return predict_triggers(pretrained_model, sentence)
+    else:
+        return predict_frames(pretrained_model, sentence, visualize)
