@@ -13,7 +13,10 @@ def train(pretrained_model, task, dataset, epochs, batch_size, lr, model_output_
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     torch.cuda.empty_cache()
 
-    id2label = {i: frame['name'] for i, frame in enumerate(fn.frames(), start=1)}
+    id2label = {}
+    for i, frame in enumerate(fn.frames(), start=1):
+        id2label[i*2-1] = f'B-{frame["name"]}'
+        id2label[i*2] = f'I-{frame["name"]}'
     id2label[0] = "None"
     label2id = {v: k for k, v in id2label.items()}
 

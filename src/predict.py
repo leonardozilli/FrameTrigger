@@ -35,9 +35,9 @@ def predict_frames(pretrained_model, sentence, visualize):
     token_classifier = pipeline(
         "token-classification", model=model, aggregation_strategy="simple", tokenizer=tokenizer)
 
-    ents = [{'start': d['start'], 'end': d['end'], 'label': d['entity_group']} for d in token_classifier(sentence) if d['entity_group'] != 'None']
 
     if visualize:
+        ents = [{'start': d['start'], 'end': d['end'], 'label': d['entity_group']} for d in token_classifier(sentence) if d['entity_group'] != 'None']
         dic_ents = {
             "text": sentence,
             "ents": ents,

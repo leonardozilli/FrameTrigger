@@ -133,7 +133,7 @@ def parse_annotated_sentence_from_framenet_sentence(
             "text": sentence_text,
             "tokens": tokens,
             "frames": frames,
-            "frame_tags": [FRAME2ID[f[2:]] if f[:2] in ['B-', 'I-'] else -1 for f in frames],
+            "frame_tags": [FRAME2ID[f] if f[:2] in ['B-', 'I-'] else 0 for f in frames],
         }
     return None
 
@@ -174,7 +174,10 @@ def load_dataset_nltk():
     ds = DatasetDict()
 
     global FRAME2ID
-    FRAME2ID = {frame['name']: i for i, frame in enumerate(fn.frames(), start=1)}
+    FRAME2ID = {}
+    for i, frame in enumerate(fn.frames(), start=1):
+        FRAME2ID[f'B-{frame["name"]}'] = i * 2 - 1
+        FRAME2ID[f'I-{frame["name"]}'] = i * 2
 
     val_data = load_validation_data()
     test_data = load_test_data()
