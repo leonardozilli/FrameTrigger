@@ -127,7 +127,7 @@ def parse_annotated_sentence_from_framenet_sentence(
             whitelist_sentence = True
     
     tagged_sentence = ' '.join(token_indices[indices] for indices in sorted(token_indices))
-    frames = ['O' if t[:2] not in ['B-', 'I-'] else t for t in tagged_sentence.split()]
+    frames = ['O' if t not in FRAME2ID else t for t in tagged_sentence.split()]
     if whitelist_sentence:
         return {
             "text": sentence_text,
@@ -148,7 +148,7 @@ def parse_annotated_sentences_from_framenet_doc(fn_doc):
 
 def load_framenet_samples(include_docs=None, exclude_docs=None):
     samples = []
-    for doc in tqdm(fn.docs()):
+    for doc in tqdm(fn.docs(), desc="Loading samples"):
         if exclude_docs and doc["filename"] in exclude_docs:
             continue
         if include_docs and doc["filename"] not in include_docs:
@@ -156,11 +156,23 @@ def load_framenet_samples(include_docs=None, exclude_docs=None):
         samples += parse_annotated_sentences_from_framenet_doc(doc)
     return samples
 
+def load_framenet_samples_from_exemplars():
+    samples = []
+    # make sure we don't include exemplars if we've already included them in the training data
+    all_doc_samples_text = {sample['text'] for sample in load_framenet_samples()}
+    for sent in tqdm(fn.exemplars(), desc="Loading exemplars"):
+        annotated_sent = parse_annotated_sentence_from_framenet_sentence(sent)
+        if annotated_sent and annotated_sent['text'] not in all_doc_samples_text:
+            samples.append(annotated_sent)
+    return samples
 
-def load_training_data():
-    return load_framenet_samples(
+def load_training_data(load_exemplars):
+    training_samples = load_framenet_samples(
         exclude_docs=SESAME_DEV_FILES + SESAME_TEST_FILES
     )
+    if load_exemplars:
+        training_samples += load_framenet_samples_from_exemplars()
+    return training_samples
 
 def load_test_data():
     return load_framenet_samples(include_docs=SESAME_TEST_FILES)
@@ -169,7 +181,7 @@ def load_validation_data():
     return load_framenet_samples(include_docs=SESAME_DEV_FILES)
 
 
-def load_dataset_nltk():
+def load_dataset_nltk(load_exemplars=False):
     nltk.download("framenet_v17")
 
     ds = DatasetDict()
@@ -180,9 +192,9 @@ def load_dataset_nltk():
         FRAME2ID[f'B-{frame["name"]}'] = i * 2 - 1
         FRAME2ID[f'I-{frame["name"]}'] = i * 2
 
+    train_data = load_training_data(load_exemplars=load_exemplars)
     val_data = load_validation_data()
     test_data = load_test_data()
-    train_data = load_training_data()
 
     ds['train'] = Dataset.from_list(train_data)
     ds['validation'] = Dataset.from_list(val_data)

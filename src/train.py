@@ -14,7 +14,7 @@ def train(pretrained_model, task, dataset, epochs, batch_size, lr, model_output_
     torch.cuda.empty_cache()
 
     id2label = {}
-    if task == 'targets':
+    if task == 'triggers':
         id2label = {0: "Not a target", 1: "B-Target", 2: "I-Target"}
     else:
         for i, frame in enumerate(fn.frames(), start=1):
