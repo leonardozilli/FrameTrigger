@@ -46,14 +46,6 @@ SESAME_DEV_FILES = [
 
 
 def flatten(df):
-    """combine a dataframe group to a one-line instance.
-
-    Args:
-        df ([dataframe]): a dataframe, represents a group
-
-    Returns:
-        a one-line dict
-    """
     label_values = np.stack(df['frame_tags'].values)
     processed = np.zeros_like(label_values)
 

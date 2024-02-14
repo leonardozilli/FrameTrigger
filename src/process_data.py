@@ -16,14 +16,11 @@ def preprocess(labels, tokenized_inputs, task, do_mask=False):
     current_word = None
     for word_id in tokenized_inputs.word_ids:
         if word_id != current_word:
-            # Start of a new word!
             current_word = word_id
             new_labels.append(-100 if word_id is None else labels[word_id])
         elif word_id is None:
-            # Special token
             new_labels.append(-100)
         else:
-            # Same word as previous token
             label = labels[word_id]
             # If the label is B-XXX we change it to I-XXX
             if label % 2 == 1:

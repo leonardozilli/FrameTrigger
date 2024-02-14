@@ -16,6 +16,7 @@ def compute_metrics_binary(eval_prediction):
         "f1_score": f1_score(true_labels, true_predictions, pos_label=1),
     }
 
+
 def compute_metrics(eval_prediction):
 
     predictions, labels = eval_prediction

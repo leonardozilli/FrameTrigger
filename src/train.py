@@ -4,7 +4,7 @@ import torch
 from nltk.corpus import framenet as fn
 from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, DataCollatorForTokenClassification
 from .evaluate import compute_metrics, compute_metrics_binary
-from .fn17 import load_dataset_hf
+from .fn17 import load_dataset_hf, load_dataset_nltk
 from .process_data import prepare_data
 
 
@@ -53,7 +53,7 @@ def train(pretrained_model, task, dataset, epochs, batch_size, lr, model_output_
         eval_dataset=dataset["validation"],
         data_collator=data_collator,
         tokenizer=tokenizer,
-        compute_metrics=compute_metrics if task == 'frames' else compute_metrics_binary
+        compute_metrics=compute_metrics
     )
 
     trainer.train()
@@ -71,7 +71,7 @@ def test(pretrained_model, test_dataset, task):
         model=model,
         tokenizer=tokenizer,
         data_collator=data_collator,
-        compute_metrics=compute_metrics if task == 'frames' else compute_metrics_binary
+        compute_metrics=compute_metrics
     )
 
     results = trainer.predict(test_dataset)
@@ -81,16 +81,16 @@ def test(pretrained_model, test_dataset, task):
 
 #%%
 if __name__ == '__main__':
-    dataset = load_dataset_hf(flatten=True)
+    dataset = load_dataset_nltk()
 
     OUT_DIR = './models/'
     CHECKPOINT = 'bert-base-cased'
     N_EPOCHS = 10
     BATCH_SIZE = 64
-    LEARNING_RATE = 1e-5
+    LEARNING_RATE = 2e-5
     TASK = 'frames'
 
-    tokenized_dataset = prepare_data(dataset, CHECKPOINT)
+    tokenized_dataset = prepare_data(dataset, CHECKPOINT, task=TASK)
 
     train(pretrained_model=CHECKPOINT, task=TASK, dataset=tokenized_dataset,
         epochs=N_EPOCHS, batch_size=BATCH_SIZE, lr=LEARNING_RATE, model_output_path=OUT_DIR)
