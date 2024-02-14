@@ -47,7 +47,10 @@ def preprocess_batch(data_batch, tokenizer, task, do_mask=False):
 
 
 def prepare_data(dataset, pretrained_model, task=None):
-    tokenizer = AutoTokenizer.from_pretrained(pretrained_model)
+    if 'roberta' in pretrained_model:
+        tokenizer = AutoTokenizer.from_pretrained(pretrained_model, add_prefix_space=True)
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(pretrained_model)
     tokenized_datasets = dataset.map(
         preprocess_batch,
         batched=True,
