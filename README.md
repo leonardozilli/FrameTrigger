@@ -8,5 +8,5 @@ Best results with `bert-base-cased`:
 
 | Task  | FN 1.7 Dev  | FN 1.7 Test  |
 | -------------  | ------------- | ------------- |
-| Target Identification  | 0.89         | 0.86         |
-| Frame Identification  | 0.86         | 0.83         |
+| Target Identification  | 0.88         | 0.86         |
+| Frame Identification  | 0.85         | 0.82         |
